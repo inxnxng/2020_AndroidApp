@@ -1,0 +1,6 @@
+/build
+/libs
+.gradle
+.pro
+/scr/androidTest
+/scr/test
