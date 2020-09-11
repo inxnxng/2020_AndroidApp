@@ -4,8 +4,6 @@
 
 ## 01 안드로이드 스튜디오와 친해지기
 
-
-
 ### Layout?
 안드로이드에서 `Activity`로 하나의 화면을 만든다. `Activity`안에 `View`를 추가함으로써 화면 구성요소가 생성되고 `Activity`안의 `View`를 배치하는 것을 `Layout`이라고 한다
 
@@ -72,9 +70,6 @@ viewgroup 또한 하나의 view라고 했을 때 또 다른 viewgroup이 이 vie
 * XML 레이아웃 파일 -> ./main/res/layout/파일이름
 * 이미지 파일 -> ./main/res/drawable/파일이름
 
-### Mission
-![mission2](images/KakaoTalk_20200908_162205.png)
-
 ## 02 레이아웃 익히기
 
 | 레이아웃 이름               | 설명                                                                                                                                                                                      |
@@ -82,7 +77,7 @@ viewgroup 또한 하나의 view라고 했을 때 또 다른 viewgroup이 이 vie
 | [제약 레이아웃(Constraint L)](#뷰-영역-알아보기) | 제약 조건 기반 모델, 디폴트                                                                                                                                                               |
 | [리니어 레이아웃(Linear L)](#뷰-생성하기)   | 박스 모델, 한쪽 방향으로 차례대로 뷰를 추가하며 화면 구성, 뷰가 차지할 수 있는 사각형 영역을 할당                                                                                         |
 | [상대 레이아웃(Relative L)](#상대-레이아웃)   | 규칙 기반 모델, 부모 컨테이너나 다른 뷰와의 상대적 위치로 구성, 제약 레이아웃 사용시 상대 레이아웃은 권장하지 않음                                                                        |
-| 프레임 레이아웃(Frame L)    | 싱글 모델, 가장 상위에 있는 하나의 뷰 또는 뷰그룹만 보여주는 것, 여러 개의 뷰가 들어가면 중첩하여 쌓음, 가장 단순하지만 여러개의 뷰를 중첩한 후 각 뷰를 전환하여 보여주는 방식, 많이 쓰임 |
+| [프레임 레이아웃(Frame L)](#프레임-레이아웃과-뷰의-전환)    | 싱글 모델, 가장 상위에 있는 하나의 뷰 또는 뷰그룹만 보여주는 것, 여러 개의 뷰가 들어가면 중첩하여 쌓음, 가장 단순하지만 여러개의 뷰를 중첩한 후 각 뷰를 전환하여 보여주는 방식, 많이 쓰임 |
 | [테이블 레이아웃(Table L)](#테이블-레이아웃)    | 격자 모델, 격자 모양의 배열을 사용하여 화면을 구성, HTML에서 많이 사용하는 정렬 방식과 유사 하지만 많이 쓰이지는 않음                                                                     |
 
 ### 뷰 영역 알아보기
@@ -208,3 +203,85 @@ XML 레이아웃에서 정의할 수 있는 대부분의 속성은 자바 소스
 ![사진](images/table.jpg )
 
 `layout_span` 은 뷰가 여러 칼럼에 걸쳐 있도록 만들기 위한 속성이며 뷰가 몇 개의 칼럼을 차지하게 될 것인지 숫자로 지정하는 것
+
+## 프레임 레이아웃과 뷰의 전환
+
+프레임 레이아웃은 뷰를 하나 이상 추가할 경우 추가된 순서로 차곡차곡 쌓인다. 가장 위에 있는 뷰를 보이지 않게 하면 그 다음 뷰가 보이는데 이렇게 보이거나 보이지 않는 속성을 가시성(Visibility)라고 한다. ViewPager 클래스를 통해 더 단순하게 작업할 수 있다
+
+```java
+public class MainActivity extends AppCompatActivity {
+    //클래스 객체 생성
+    ImageView imageView;
+    ImageView imageView2;
+
+    int imageIndex =0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        //객체 할당
+        imageView =findViewById(R.id.imageView);
+        imageView2=findViewById(R.id.imageView2);
+    }
+
+    public void onButton1Clicked(View v){
+        changeImage();
+    }
+    //visibility를 통해 전환효과 주는 것
+    private void changeImage() {
+        if(imageIndex == 0) {
+            imageView.setVisibility(View.VISIBLE);
+            imageView2.setVisibility(View.INVISIBLE);
+            imageIndex = 1;
+        }else if(imageIndex == 1){
+            imageView.setVisibility(View.INVISIBLE);
+            imageView2.setVisibility(View.VISIBLE);
+            imageIndex = 0;
+        }
+    }
+}
+```
+
+### 스크롤 뷰
+```java
+public class MainActivity extends AppCompatActivity {
+    ScrollView scrollView;
+    ImageView imageView;
+    BitmapDrawable bitmap;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        scrollView = findViewById(R.id.scrollView);
+        imageView = findViewById(R.id.imageView);
+        scrollView.setHorizontalScrollBarEnabled(true);
+
+        Resources res = getResources();
+        bitmap = (BitmapDrawable) res.getDrawable(R.drawable.p1);
+        int bitmapWidth = bitmap.getIntrinsicWidth();
+        int bitmapHeight = bitmap.getIntrinsicHeight();
+
+        imageView.setImageDrawable(bitmap);
+        imageView.getLayoutParams().width=bitmapWidth;
+        imageView.getLayoutParams().height=bitmapHeight;
+    }
+
+    public void onButton1Clicked(View v){
+        changeImage();
+    }
+    private void changeImage(){
+        Resources res = getResources();
+        bitmap = (BitmapDrawable) res.getDrawable(R.drawable.p2);
+        int bitmapWidth = bitmap.getIntrinsicWidth();
+        int bitmapHeight = bitmap.getIntrinsicHeight();
+
+        imageView.setImageDrawable(bitmap);
+        imageView.getLayoutParams().width=bitmapWidth;
+        imageView.getLayoutParams().height=bitmapHeight;
+    }
+}
+```
