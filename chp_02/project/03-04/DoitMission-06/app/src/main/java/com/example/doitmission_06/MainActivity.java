@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                textView.setText(Integer.valueOf(i));
+                textView.setText(String.valueOf(i));
                 progress.setProgress(i);
             }
 
