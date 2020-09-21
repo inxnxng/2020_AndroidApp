@@ -251,3 +251,9 @@ button2.setOnClickListener(new View.OnClickListener() {
 });
 ```
 `this`를 통해객체 전달을 했다는 것 -> `dialog = new ProgressDialog(MainActivity.this);`
+
+## DoitMission
+#### 05
+둥근 모서리 참고 : https://wimir-dev.tistory.com/37
+#### 06
+참고 : 
